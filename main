@@ -1,0 +1,50 @@
+#!/bin/sh
+
+# Instalar o net-tools para usar o ifconfig
+dpkg -i net-tools_1.60+git20180626.aebd88e-1_amd64.deb
+
+# Fixar novo endereço mac para a interface ethernet*
+echo "ifconfig eth0 down" >> /etc/init.d/networking
+echo "ifconfig eth0 hw ether d8:9d:67:06:43:d2" >> /etc/init.d/networking
+echo "ifconfig eth0 up" >> /etc/init.d/networking
+
+# Configurar a interface wifi com ip fixo (3)(4)
+echo "auto wlan0" >> /etc/network/interfaces
+echo "iface wlan0 inet static" >> /etc/network/interfaces
+echo "address 10.42.3.1/24" >> /etc/network/interfaces
+
+# Estabelecer novo endereço mac para a placa ethernet*
+ifconfig eth0 down
+ifconfig eth0 hw ether d8:9d:67:06:43:d2
+ifconfig eth0 up
+
+# Atualizar os repositórios e instalar os pacotes necessários (1)
+apt-get update
+apt install hostapd udhcpd
+
+# Configurar os pacotes instalados (1)(2)
+cp hostapd.conf.gz /etc/hostapd
+gunzip /etc/hostapd/hostapd.conf.gz
+cp udhcpd.conf /etc
+touch /var/lib/misc/udhcpd.leases
+cp hostapd udhcpd /etc/default/
+
+# Disponibilizando a internet aos dispositivos a serem conectados (5)(1)
+echo net.ipv4.ip_forward=1 >> /etc/sysctl.conf
+echo "/sbin/iptables --table nat --append POSTROUTING --out-interface eth0 -j MASQUERADE" >> /etc/rc.local
+
+# Prevenir queda de energia da interface wifi (6)
+echo HOOK_BLACKLIST="wireless" > /etc/pm/config.d/blacklist
+
+# Reinicializar o sistema =)
+reboot
+
+<<fontes
+(1) https://medium.com/@anooppoommen/create-a-wifi-hotspot-on-linux-29349b9c582d
+(2) https://www.vivaolinux.com.br/artigo/Transformando-o-Linux-em-um-Access-Point-com-hostapd
+(3) https://wiki.debian.org/NetworkConfiguration#Configuring_the_interface_manually
+(4) https://serverfault.com/questions/335994/creating-a-static-ip-with-wlan0
+(5) http://eriberto.pro.br/iptables/1.html
+(6) https://askubuntu.com/questions/85214/how-can-i-prevent-iwconfig-power-management-from-being-turned-on
+fontes
+

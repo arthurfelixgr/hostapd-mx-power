@@ -1,0 +1,19 @@
+#!/bin/sh
+dpkg -i net-tools_1.60+git20180626.aebd88e-1_amd64.deb
+<<san
+ifconfig eth0 down
+ifconfig eth0 hw ether d8:9d:67:06:43:d2
+ifconfig eth0 up
+san
+ifconfig wlan0 10.42.3.1/24
+apt-get update
+apt install hostapd udhcpd
+cp hostapd.conf.gz /etc/hostapd
+gunzip /etc/hostapd/hostapd.conf.gz
+hostapd -B /etc/hostapd/hostapd.conf
+cp udhcpd.conf /etc
+touch /var/lib/misc/udhcpd.leases
+udhcpd -f &
+echo "1" > /proc/sys/net/ipv4/ip_forward
+iptables --table nat --append POSTROUTING --out-interface eth0 -j MASQUERADE
+
