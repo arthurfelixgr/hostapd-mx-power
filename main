@@ -34,7 +34,7 @@ echo net.ipv4.ip_forward=1 >> /etc/sysctl.conf
 echo "/sbin/iptables --table nat --append POSTROUTING --out-interface eth0 -j MASQUERADE" >> /etc/rc.local
 
 # Prevenir queda de energia da interface wifi (6)
-echo HOOK_BLACKLIST="wireless" > /etc/pm/config.d/blacklist
+echo 'HOOK_BLACKLIST="wireless"' > /etc/pm/config.d/blacklist
 
 # Reinicializar o sistema =)
 reboot
