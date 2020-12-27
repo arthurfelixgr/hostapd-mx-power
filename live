@@ -10,6 +10,7 @@ apt-get update
 apt install hostapd udhcpd
 cp hostapd.conf.gz /etc/hostapd
 gunzip /etc/hostapd/hostapd.conf.gz
+echo 'HOOK_BLACKLIST="wireless"' > /etc/pm/config.d/blacklist
 hostapd -B /etc/hostapd/hostapd.conf
 cp udhcpd.conf /etc
 touch /var/lib/misc/udhcpd.leases
