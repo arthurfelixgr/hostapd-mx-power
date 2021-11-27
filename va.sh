@@ -12,7 +12,7 @@ sed -e 's/^option domain/#option domain/' -e 's/^default-lease/#default-lease/' 
 printf "subnet 10.10.0.0 netmask 255.255.255.0 {\n  range 10.10.0.2 10.10.0.251;\n  option domain-name-servers 8.8.8.8, 8.8.4.4;\n  option routers 10.10.0.1;\n}\n" >> dhcpd.conf
 rm /etc/dhcp/dhcpd.conf 
 mv dhcpd.conf /etc/dhcp/
-printf "auto wlan0\niface waln0 inet static\naddress 10.10.0.1\nnetmask 255.255.255.0\n" >> /etc/network/interfaces
+printf "auto wlan0\niface wlan0 inet static\naddress 10.10.0.1\nnetmask 255.255.255.0\n" >> /etc/network/interfaces
 echo net.ipv4.ip_forward=1 >> /etc/sysctl.conf
 iptables -t nat -A POSTROUTING -s 10.10.0.0/16 -o eth0 -j MASQUERADE
 apt install iptables-persistent
