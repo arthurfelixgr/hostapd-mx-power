@@ -1,4 +1,5 @@
 #!/bin/sh
+apt install hostapd isc-dhcp-server
 wget https://github.com/arthurfelixgr/hostapd-mx-power/raw/main/hostapd.conf.gz
 mv hostapd.conf.gz /etc/hostapd/
 gunzip /etc/hostapd/hostapd.conf.gz
@@ -14,6 +15,7 @@ rm /etc/dhcp/dhcpd.conf
 mv dhcpd.conf /etc/dhcp/
 printf "auto wlan0\niface wlan0 inet static\naddress 10.10.0.1\nnetmask 255.255.255.0\n" >> /etc/network/interfaces
 echo net.ipv4.ip_forward=1 >> /etc/sysctl.conf
-iptables -t nat -A POSTROUTING -s 10.10.0.0/16 -o eth0 -j MASQUERADE
+/usr/sbin/iptables -t nat -A POSTROUTING -s 10.10.0.0/16 -o eth0 -j MASQUERADE
 apt install iptables-persistent
+apt purge connman
 exit
