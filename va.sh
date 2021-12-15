@@ -19,3 +19,6 @@ echo net.ipv4.ip_forward=1 >> /etc/sysctl.conf
 apt install iptables-persistent
 apt purge connman
 exit
+# fonte: https://arnab-k.medium.com/ubuntu-how-to-setup-a-wi-fi-hotspot-access-point-mode-192cbb2eeb90
+
+
